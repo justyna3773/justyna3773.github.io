@@ -40,7 +40,7 @@ Transformers.js is designed to be functionally equivalent to Hugging Face’s tr
 
 Transformers.js uses ONNX Runtime to run models in the browser. 
 If you don't manage to find one of the numerous models from Hugging Face tailored to your needs (or you have finetuned your own model and want to use with Transformers.js), you can follow the path of converting your model, from popular formats (PyTorch, Tensorflow) to ONNX. 
-https://huggingface.co/docs/transformers.js
+(Transformers.js](https://huggingface.co/docs/transformers.js)
 The [conversion to ONNX format](https://github.com/huggingface/optimum#onnx--onnx-runtime) (in case of Transformers.js for ONNX runtime) is rather easy with these commands:
 ```
 pip install --upgrade-strategy eager optimum[onnxruntime]
@@ -60,8 +60,8 @@ As of now WebGPU support is not included. This means, that running larger models
 However I recommend checking out their [projects repo](https://xenova.github.io/transformers.js/) for some impressive examples, they may be fast enough and not need GPU support.
 
 ### Simple Transformers.js app
-I experimented with one of the examples on Transformers.js Github page: [react-translator](https://github.com/xenova/transformers.js/tree/main/examples/react-translator) to convert it to a simple question answering app.
-I was impressed with how adaptable this example is, the only thing you have to change the pipeline from *translation* to *text2text-generation* to make the model generate answer instead of translating is:
+I experimented with one of the examples on Transformers.js Github page: [react-translator](https://github.com/xenova/transformers.js/tree/main/examples/react-translator) to convert it to a [simple question answering app](https://github.com/justyna3773/text_manipulation_transformers_js.git).
+I was impressed with how adaptable this example is, the only thing you have to change the pipeline from *translation* to *text2text-generation* to make the model generate answer instead of translating is MyTranslationPipeline class in worker.js file:
 
 ```js
 import { pipeline } from '@xenova/transformers';
@@ -82,9 +82,53 @@ class MyTranslationPipeline {
 
 ```
 Essentially you change the name of the task and model ID from HuggingFace.
-After that you run ```npm run dev``` and voila, you can access your App under local address: [http://localhost:5173/](http://localhost:5173/)
+After that you run ```npm run dev``` and voila, you can access your App under local address: [http://localhost:5173/]()
 
-From there it is really easy to deploy the
+* * *
+
+## WebGPU
+
+![implementation](implementation_status.png)
+WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit.
+It is still in the early stages, but Chrome enables it by default since April 2023 (version 113).
+
+### Project which use WebGPU
+- ### Web-LLM
+>*WebLLM is a modular, customizable javascript package that directly brings language model chats directly onto web browsers with hardware acceleration. **Everything runs inside the browser with no server support and is accelerated with WebGPU.** We can bring a lot of fun opportunities to build AI assistants for everyone and enable privacy while enjoying GPU acceleration.*
+[Web-LLM demo](https://webllm.mlc.ai/)
+
+Advantages:
+If you are fine with your user downloading large model files then it works well. It also has a pretty extensive documentation.
+
+Problems:
+- initial downloading of the model is slow and the models supported are heavy (several GB). TinyLLama for example, takes 2 GB of your memory.
+- I experimented with disabling GPU support in the browser - then the chat does not work at all. This undermines the idea that we can have one app to run on all hardwares.
+- customization capabilities - there is a limited number of model architectures it supports (Mistral, LLama, Red Pyjamas and a few others). You can add model weights from your finetuned model in easy fashion, however adding your own architecture is problematic.
+
+
+Anyway, this project seems to have a lot of potential and well documented workflow on how to add your own model library. 
+I wanted to add a small BERT model, to make it decently good for conversations or question but at the same time keep it as small as possible.  
+I followed their worflow for adding new model library: [https://llm.mlc.ai/docs/deploy/javascript.html#bring-your-own-model-library](https://llm.mlc.ai/docs/deploy/javascript.html#bring-your-own-model-library)
+
+
+
+
+
+
+
+
+
+
+
+
+
+From there it is really easy to deploy the app to Github Pages:
+
+1. Install gh-pages extension ```npm install gh-pages```
+2. Add following lines to your package.json file:
+```
+"homepage": "https://justyna3773.github.io/chat_wasm/",
+```
 
 
 
