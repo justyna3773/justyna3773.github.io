@@ -2,23 +2,63 @@
 layout: default
 ---
 
-Text can be **bold**, _italic_, or ~~strikethrough~~.
 
-[Link to another page](./another-page.html).
 
-There should be whitespace between paragraphs.
+## Why do we try to do it?
 
-There should be whitespace between paragraphs. We recommend including a README, or a file with information about your project.
+Imagine that you have a decent model that could make using your application/website more interesting, but you:
+- don't want to pay for hosting the model for inference and associated infrastructure
+- make use of the end user hardware
+- make use (if possible) of the end user GPU
+- make it distributable to every architecture
+- make the inference efficient (by using WASM)
 
-# Header 1
+WASM itself already partly answers the problem.
 
-This is a normal paragraph following a header. GitHub is a code hosting platform for version control and collaboration. It lets you and others work together on projects from anywhere.
+## WASM
 
-## Header 2
+WebAssembly (abbreviated _Wasm_) is a binary instruction format for a stack-based virtual machine. Wasm is designed as a portable compilation target for programming languages, enabling deployment on the web for client and server applications.
 
-> This is a blockquote following a header.
->
-> When something is important enough, you do it even if the odds are not in your favor.
+> *WebAssembly (Wasm) is generally faster than JavaScript for certain types of tasks. WebAssembly is a binary instruction format that allows developers to run code at near-native speed in modern web browsers. JavaScript, on the other hand, is a high-level scripting language that is often used for web development.*
+
+https://graffersid.com/webassembly-vs-javascript/
+
+So, it would be nice to have the inference part of your code written in WASM, to make it more optimized.
+
+## How to run models with WASM in the browser
+
+First, I would like to clarify that using WASM in the following examples practically means installing packages which contain WASM binaries. 
+Operations and functions which would run slower using vanilla JS can be rewritten in RUST and compiled to WASM, but JavaScript still interacts with WASM.
+
+- ### Transformers.js
+
+Transformers.js is designed to be functionally equivalent to Hugging Face’s transformers python library, meaning you can run the same pretrained models using a very similar API. The models support common tasks in different modalities, such as:
+- 📝 Natural Language Processing: text classification, named entity recognition, question answering, language modeling, summarization, translation, multiple choice, and text generation.
+- 🖼️ Computer Vision: image classification, object detection, and segmentation.
+- 🗣️ Audio: automatic speech recognition and audio classification.
+- 🐙 Multimodal: zero-shot image classification.
+
+Transformers.js uses ONNX Runtime to run models in the browser. 
+If you don't manage to find one of the numerous models from Hugging Face tailored to your needs (or you have finetuned your own model and want to use with Transformers.js), you can follow the path of converting your model, from popular formats (PyTorch, Tensorflow) to ONNX. 
+https://huggingface.co/docs/transformers.js
+
+Advantages:
+- this library is very well documented
+- extremely easy to use (syntax similar to HF transformers)
+- surprisingly fast
+
+Disadvantages:
+
+As of now WebGPU support is not included. This means, that running larger models will be constrained to CPU architecture and may not be efficient.
+
+
+
+
+
+
+
+
+
 
 ### Header 3
 
