@@ -41,15 +41,52 @@ Transformers.js is designed to be functionally equivalent to Hugging Face’s tr
 Transformers.js uses ONNX Runtime to run models in the browser. 
 If you don't manage to find one of the numerous models from Hugging Face tailored to your needs (or you have finetuned your own model and want to use with Transformers.js), you can follow the path of converting your model, from popular formats (PyTorch, Tensorflow) to ONNX. 
 https://huggingface.co/docs/transformers.js
+The [conversion to ONNX format](https://github.com/huggingface/optimum#onnx--onnx-runtime) (in case of Transformers.js for ONNX runtime) is rather easy with these commands:
+```
+pip install --upgrade-strategy eager optimum[onnxruntime]
+optimum-cli inc quantize --model distilbert-base-cased-distilled-squad --output ./quantized_distilbert
+```
+As you can see optimum-cli makes it easy to perform quantization of your model, which allows to make a smaller file from the model weights. 
+It is a good practice to load your model to verify that its accuracy after quantization is still acceptable for your use.
 
 Advantages:
-- this library is very well documented
+- Transformers.js library is very well documented
 - extremely easy to use (syntax similar to HF transformers)
 - surprisingly fast
 
 Disadvantages:
 
 As of now WebGPU support is not included. This means, that running larger models will be constrained to CPU architecture and may not be efficient.
+However I recommend checking out their [projects repo](https://xenova.github.io/transformers.js/) for some impressive examples, they may be fast enough and not need GPU support.
+
+### Simple Transformers.js app
+I experimented with one of the examples on Transformers.js Github page: [react-translator](https://github.com/xenova/transformers.js/tree/main/examples/react-translator) to convert it to a simple question answering app.
+I was impressed with how adaptable this example is, the only thing you have to change the pipeline from *translation* to *text2text-generation* to make the model generate answer instead of translating is:
+
+```js
+import { pipeline } from '@xenova/transformers';
+
+class MyTranslationPipeline {
+    static task = 'text2text-generation';
+    static model = 'Xenova/flan-t5-base';
+    static instance = null;
+
+    static async getInstance(progress_callback = null) {
+        if (this.instance === null) {
+            this.instance = pipeline(this.task, this.model, { progress_callback });
+        }
+
+        return this.instance;
+    }
+}
+
+```
+Essentially you change the name of the task and model ID from HuggingFace.
+After that you run ```npm run dev``` and voila, you can access your App under local address: [http://localhost:5173/](http://localhost:5173/)
+
+From there it is really easy to deploy the
+
+
 
 
 

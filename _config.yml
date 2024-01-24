@@ -1,5 +1,5 @@
-title: Architect theme
-description: Architect is a theme for GitHub Pages.
+title: Model in your browser
+description: Model inference in your browser using WASM and/or JS
 show_downloads: true
 google_analytics:
 theme: jekyll-theme-architect
