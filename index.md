@@ -27,7 +27,7 @@ So, it would be nice to have the inference part of your code written in WASM, to
 
 ## How to run models with WASM in the browser
 
-First, I would like to clarify that using WASM in the following examples practically means installing packages which contain WASM binaries. 
+First, I would like to clarify that using WASM in the following examples practically means installing packages which contain WASM binaries or have been compiled entirely to WASM. 
 Operations and functions which would run slower using vanilla JS can be rewritten in RUST and compiled to WASM, but JavaScript still interacts with WASM.
 
 - ### Transformers.js
@@ -88,11 +88,15 @@ After that you run ```npm run dev``` and voila, you can access your App under lo
 
 ## WebGPU
 
-![implementation](implementation_status.png)
 WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit.
 It is still in the early stages, but Chrome enables it by default since April 2023 (version 113).
 
-### Project which use WebGPU
+![webgpu](web_gpu_stack.png)
+
+![implementation](implementation_status.png)
+
+
+## Project which use WebGPU (tested with NVIDIA RTX 3060 on a laptop)
 - ### Web-LLM
 >*WebLLM is a modular, customizable javascript package that directly brings language model chats directly onto web browsers with hardware acceleration. **Everything runs inside the browser with no server support and is accelerated with WebGPU.** We can bring a lot of fun opportunities to build AI assistants for everyone and enable privacy while enjoying GPU acceleration.*
 [Web-LLM demo](https://webllm.mlc.ai/)
@@ -101,144 +105,49 @@ Advantages:
 If you are fine with your user downloading large model files then it works well. It also has a pretty extensive documentation.
 
 Problems:
-- initial downloading of the model is slow and the models supported are heavy (several GB). TinyLLama for example, takes 2 GB of your memory.
+- initial downloading of the model is slow and the models supported are heavy (several GB). TinyLLama for example, takes 2 GB of your memory. 
 - I experimented with disabling GPU support in the browser - then the chat does not work at all. This undermines the idea that we can have one app to run on all hardwares.
 - customization capabilities - there is a limited number of model architectures it supports (Mistral, LLama, Red Pyjamas and a few others). You can add model weights from your finetuned model in easy fashion, however adding your own architecture is problematic.
 
 
 Anyway, this project seems to have a lot of potential and well documented workflow on how to add your own model library. 
 I wanted to add a small BERT model, to make it decently good for conversations or question but at the same time keep it as small as possible.  
-I followed their worflow for adding new model library: [https://llm.mlc.ai/docs/deploy/javascript.html#bring-your-own-model-library](https://llm.mlc.ai/docs/deploy/javascript.html#bring-your-own-model-library)
+I followed their workflow for adding new model library: [https://llm.mlc.ai/docs/deploy/javascript.html#bring-your-own-model-library](https://llm.mlc.ai/docs/deploy/javascript.html#bring-your-own-model-library) and couldn't reproduce the notebook results: [tutorial_add_new_model_architecture_in_tvm_nn_module.ipynb](https://github.com/mlc-ai/notebooks/blob/main/mlc-llm/tutorial_add_new_model_architecture_in_tvm_nn_module.ipynb)
 
 
+- ### Web-StableDiffusion
+ https://github.com/mlc-ai/web-stable-diffusion
+ > *This project brings stable diffusion models onto web browsers. **Everything runs inside the browser with no server support.*** 
+- Similar problems to Web-LLM - you have to have a lot of memory, as it downloads models which are not lightweight (but at least they are cached and you get a progress update while they download)
+- It is slow in the first run
 
 
+- ### Web ONNX
 
+>Wonnx is a GPU-accelerated ONNX inference run-time written 100% in Rust, ready for the web.
+(https://github.com/webonnx/wonnx)
 
+What is ONNX runtime? Open Neural Network Exchange Runtime is a cross-platform inference and training machine-learning accelerator.
+ONNX Runtime inference can enable faster customer experiences and lower costs, supports models from PyTorch and TensorFlow/Keras as well as classical machine learning libraries such as scikit-learn, LightGBM, XGBoost, etc. ONNX Runtime is compatible with different hardware, drivers, and operating systems, and provides optimal performance by leveraging hardware accelerators where applicable alongside graph optimizations and transforms.
 
-
-
-
-
-
-
-From there it is really easy to deploy the app to Github Pages:
-
-1. Install gh-pages extension ```npm install gh-pages```
-2. Add following lines to your package.json file:
+Web ONNX has a WASM package version and can be installed with ```npm install @webonnx/wonnx-wasm```
+I used their complete [example with squeeze model](https://github.com/webonnx/wonnx-wasm-example) for image classification with Vite bundler (bundler optimizes the project structure and enables communication between components written in different languages)
+As part of this exercise I sought to bring this simple example to Github pages. 
+It requires installing gh-pages package ```npm install gh-pages``` and updating the package.json file with the following lines:
 ```
-"homepage": "https://justyna3773.github.io/chat_wasm/",
+"scripts":
+"predeploy": "npm run build",
+"deploy": "gh-pages -d dist",
 ```
-
-
-
-
-
-
-
-
-
-
-
-
-### Header 3
-
-```js
-// Javascript code with syntax highlighting.
-var fun = function lang(l) {
-  dateformat.i18n = require('./lang/' + l)
-  return true;
-}
+As well as adding your Github pages link in the package.json file with:
 ```
-
-```ruby
-# Ruby code with syntax highlighting
-GitHubPages::Dependencies.gems.each do |gem, version|
-  s.add_dependency(gem, "= #{version}")
-end
+  "homepage": "https://justyna3773.github.io/camera_classify_webgpu/",
 ```
-
-#### Header 4
-
-*   This is an unordered list following a header.
-*   This is an unordered list following a header.
-*   This is an unordered list following a header.
-
-##### Header 5
-
-1.  This is an ordered list following a header.
-2.  This is an ordered list following a header.
-3.  This is an ordered list following a header.
-
-###### Header 6
-
-| head1        | head two          | three |
-|:-------------|:------------------|:------|
-| ok           | good swedish fish | nice  |
-| out of stock | good and plenty   | nice  |
-| ok           | good `oreos`      | hmm   |
-| ok           | good `zoute` drop | yumm  |
-
-### There's a horizontal rule below this.
-
-* * *
-
-### Here is an unordered list:
-
-*   Item foo
-*   Item bar
-*   Item baz
-*   Item zip
-
-### And an ordered list:
-
-1.  Item one
-1.  Item two
-1.  Item three
-1.  Item four
-
-### And a nested list:
-
-- level 1 item
-  - level 2 item
-  - level 2 item
-    - level 3 item
-    - level 3 item
-- level 1 item
-  - level 2 item
-  - level 2 item
-  - level 2 item
-- level 1 item
-  - level 2 item
-  - level 2 item
-- level 1 item
-
-### Small image
-
-![Octocat](https://github.githubassets.com/images/icons/emoji/octocat.png)
-
-### Large image
-
-![Branching](https://guides.github.com/activities/hello-world/branching.png)
+After that you can deploy the app to Github pages with ```npm run deploy```
+I did not manage, however, to overcome the problem with no inference being made when GPU is not available.
 
 
-### Definition lists can be used with HTML syntax.
+When I tried to test WONNX with a small language model like BERT (since the authors claim that WONNX is tested with BERT architecture), I encountered a problem with inferring shapes when trying to prepare the model for inference with WONNX (https://github.com/webonnx/wonnx/issues/200). As of now, it hasn't been resolved. 
+In general, running language models with WONNX may be problematic, as the package does not implement all necessary operators for BERT architectures to work. For more details take a look at this post by one of major WONNX contributors: (https://t-shaped.nl/2023/running-ai-models-in-the-browser-using-wonnx)
 
-<dl>
-<dt>Name</dt>
-<dd>Godzilla</dd>
-<dt>Born</dt>
-<dd>1952</dd>
-<dt>Birthplace</dt>
-<dd>Japan</dd>
-<dt>Color</dt>
-<dd>Green</dd>
-</dl>
-
-```
-Long, single-line code blocks should not wrap. They should horizontally scroll if they are too long. This line should be long enough to demonstrate this.
-```
-
-```
-The final element.
-```
+Summary: WONNX is helpful when you try to distribute models for image classification, like Squeezenet or ResNet, however it is not easily customized for usage with language models. 
