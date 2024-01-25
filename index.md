@@ -146,7 +146,7 @@ As well as adding your Github pages link in the package.json file with:
 ```
 After that you can deploy the app to Github pages with ```npm run deploy```
 I did not manage, however, to overcome the problem with no inference being made when GPU is not available.
-
+Link to the repo for real-time object classification from the camera: [https://github.com/justyna3773/camera_classify_webgpu](https://github.com/justyna3773/camera_classify_webgpu) and to the deployed app: [https://justyna3773.github.io/camera_classify_webgpu/](https://justyna3773.github.io/camera_classify_webgpu/)
 
 When I tried to test WONNX with a small language model like BERT (since the authors claim that WONNX is tested with BERT architecture), I encountered a problem with inferring shapes when trying to prepare the model for inference with WONNX [https://github.com/webonnx/wonnx/issues/200](https://github.com/webonnx/wonnx/issues/200). As of now, it hasn't been resolved. 
 In general, running language models with WONNX may be problematic, as the package does not implement all necessary operators for BERT architectures to work. For more details take a look at this post by one of major WONNX contributors: [https://t-shaped.nl/2023/running-ai-models-in-the-browser-using-wonnx](https://t-shaped.nl/2023/running-ai-models-in-the-browser-using-wonnx)
