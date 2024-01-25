@@ -113,6 +113,7 @@ Problems:
 Anyway, this project seems to have a lot of potential and well documented workflow on how to add your own model library. 
 I wanted to add a small BERT model, to make it decently good for conversations or question but at the same time keep it as small as possible.  
 I followed their workflow for adding new model library: [https://llm.mlc.ai/docs/deploy/javascript.html#bring-your-own-model-library](https://llm.mlc.ai/docs/deploy/javascript.html#bring-your-own-model-library) and couldn't reproduce the notebook results: [tutorial_add_new_model_architecture_in_tvm_nn_module.ipynb](https://github.com/mlc-ai/notebooks/blob/main/mlc-llm/tutorial_add_new_model_architecture_in_tvm_nn_module.ipynb)
+Here is the link to the issue: [https://github.com/mlc-ai/web-llm/issues/274](https://github.com/mlc-ai/web-llm/issues/274)
 
 
 - ### Web-StableDiffusion
